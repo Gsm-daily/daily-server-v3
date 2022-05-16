@@ -1,0 +1,27 @@
+package com.project.daily.exeception;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
+
+import static org.springframework.http.HttpStatus.*;
+
+@Getter
+@AllArgsConstructor
+public enum ErrorCode {
+
+    /* 400 BAD_REQUEST : 잘못된 요청*/
+
+    /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
+
+    /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
+    USER_NOT_FOUND(NOT_FOUND, "이메일을 찾을 수 없습니다."),
+    PASSWORD_NOT_CORRECT(NOT_FOUND,"비밀번호가 맞지 않습니다."),
+
+    /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
+    USED_EMAIL(CONFLICT, "이미 사용중인 이메일입니다.");
+
+    private HttpStatus httpStatus;
+    private String msg;
+}
