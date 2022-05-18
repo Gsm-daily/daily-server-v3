@@ -1,18 +1,1 @@
-server:
-  # address: '10.120.74.59'
-  port: 8081
 
-spring :
-  datasource:
-    url: "jdbc:mysql://localhost:3306/daily?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul"
-    username: root
-    password: kimsunggil2005!
-  main:
-    allow-circular-references: true
-  jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: true
-
-jwt:
-  secret: "jwt_secret_daily"
