@@ -1,61 +1,98 @@
 package com.project.daily.config.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.project.daily.exeception.CustomException;
+import com.project.daily.exeception.ErrorCode;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.util.Base64;
+import java.nio.charset.MalformedInputException;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.security.SignatureException;
 import java.util.Date;
 
+import static com.project.daily.exeception.ErrorCode.REFRESH_TOKEN_EXPIRATION;
+
+
 @Component
-@RequiredArgsConstructor
 public class TokenProvider {
 
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private final Long accessTokenValidMillisecond = 60 * 60 * 1000L; //1 hours
-    private final Long refreshTokenValidMillisecond = 14 * 24 * 60 * 1000L; //14 days;
+    private static final Long ACCESS_TOKEN_EXPIRED_TIME = 1000 * 60 * 60 * 3L; // 만료시간 3시간
+    private static final Long REFRESH_TOKEN_EXPIRED_TIME = 14 * 24 * 60 * 60 * 1000L;
 
-    private final UserDetailsService userDetailsService;
+    @RequiredArgsConstructor
+    enum TokenType {
+        ACCESS_TOKEN("accessToken"),
+        REFRESH_TOKEN("refreshToken");
 
-    @PostConstruct
-    protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+        private final String value;
     }
 
-    public String createAccessToken(String email) {
-        Claims claims = Jwts.claims().setSubject(email);
+    @RequiredArgsConstructor
+    enum TokenClaimName {
+        USER_EMAIL("userEmail"),
+        TOKEN_TYPE("tokenType");
 
-        Date time = new Date();
+        final String value;
+    }
+
+    private Key getSigningKey(String secretKey) {
+        byte keyByte[] = secretKey.getBytes(StandardCharsets.UTF_8);
+        return Keys.hmacShaKeyFor(keyByte);
+    }
+
+    public Claims extractAllClaims(String token) throws ExpiredJwtException, IllegalArgumentException, UnsupportedOperationException {
+        return Jwts.parserBuilder() // token 추출 할 때 사용
+                .setSigningKey(getSigningKey(secretKey))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public String getUserEmail(String token) throws MalformedInputException, SignatureException{
+
+        if(isExpired(token)) {
+            throw new CustomException(REFRESH_TOKEN_EXPIRATION);
+        }
+
+        return extractAllClaims(token).get(TokenClaimName.USER_EMAIL.value, String.class); // .get(ClaimName, Object)
+    }
+
+    public Boolean isExpired(String token) {
+        try{
+            extractAllClaims(token).getExpiration();
+            return false;
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
+    private String doGenerateToken(String userEmail, TokenType tokenType, Long expiredTime) {
+        final Claims claims = Jwts.claims();
+        claims.put("userEmail", userEmail);
+        claims.put("tokenType", tokenType);
 
         return Jwts.builder()
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setClaims(claims)
-                .setIssuedAt(time)
-                .setExpiration(new Date(time.getTime() + accessTokenValidMillisecond))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .setExpiration(new Date(System.currentTimeMillis()))
+                .setIssuedAt(new Date(System.currentTimeMillis() + expiredTime))
+                .signWith(getSigningKey(secretKey), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String createRefreshToken(String value) {
-        Claims claims = Jwts.claims().setSubject(String.valueOf(value));
-        claims.put("Value", value);
-
-        Date time = new Date();
-
-        return Jwts.builder()
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setExpiration(new Date(time.getTime() + accessTokenValidMillisecond))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
+    public String generateAccessToken(String email) {
+        return doGenerateToken(email, TokenType.ACCESS_TOKEN, ACCESS_TOKEN_EXPIRED_TIME);
     }
 
+    public String generateRefreshToken(String email) {
+        return doGenerateToken(email, TokenType.REFRESH_TOKEN, REFRESH_TOKEN_EXPIRED_TIME);
+    }
 
 }
