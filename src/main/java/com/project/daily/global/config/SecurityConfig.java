@@ -1,4 +1,4 @@
-package com.project.daily.config;
+package com.project.daily.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.project.daily.config.jwt;
+package com.project.daily.global.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +23,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        
+
+        String accessToken = request.getHeader("Authorization");
+        String refreshToken = request.getHeader("RefreshToken");
+
+        if(accessToken != null && refreshToken != null && tokenProvider.getTokenType(accessToken).equals("accessToken")) {
+            if(tokenProvider.isExpired(accessToken) && tokenProvider.getTokenType(refreshToken).equals("refreshToken") && !tokenProvider.isExpired(refreshToken)) {
+
+            }
+        }
     }
 }

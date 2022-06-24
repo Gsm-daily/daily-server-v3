@@ -1,5 +1,6 @@
-package com.project.daily.config.jwt;
+package com.project.daily.global.security.jwt;
 
+import antlr.Token;
 import com.project.daily.exeception.CustomException;
 import com.project.daily.exeception.ErrorCode;
 import io.jsonwebtoken.*;
@@ -56,13 +57,18 @@ public class TokenProvider {
                 .getBody();
     }
 
-    public String getUserEmail(String token) throws MalformedInputException, SignatureException{
+    public String getUserEmail(String token) {
 
         if(isExpired(token)) {
             throw new CustomException(REFRESH_TOKEN_EXPIRATION);
         }
 
         return extractAllClaims(token).get(TokenClaimName.USER_EMAIL.value, String.class); // .get(ClaimName, Object)
+    }
+
+    public String getTokenType(String token) {
+
+        return extractAllClaims(token).get(TokenClaimName.TOKEN_TYPE.value, String.class);
     }
 
     public Boolean isExpired(String token) {
