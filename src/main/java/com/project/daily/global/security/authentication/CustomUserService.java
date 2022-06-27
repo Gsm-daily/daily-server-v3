@@ -1,7 +1,6 @@
 package com.project.daily.global.security.authentication;
 
 import com.project.daily.exeception.CustomException;
-import com.project.daily.exeception.ErrorCode;
 import com.project.daily.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

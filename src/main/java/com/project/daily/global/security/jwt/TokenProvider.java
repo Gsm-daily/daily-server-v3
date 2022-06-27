@@ -1,19 +1,14 @@
 package com.project.daily.global.security.jwt;
 
-import antlr.Token;
 import com.project.daily.exeception.CustomException;
-import com.project.daily.exeception.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.MalformedInputException;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.security.SignatureException;
 import java.util.Date;
 
 import static com.project.daily.exeception.ErrorCode.REFRESH_TOKEN_EXPIRATION;
