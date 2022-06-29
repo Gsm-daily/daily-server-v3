@@ -1,6 +1,6 @@
-package com.project.daily.dto.Request;
+package com.project.daily.domain.user.dto.Request;
 
-import com.project.daily.domain.User;
+import com.project.daily.domain.user.User;
 import lombok.*;
 
 import javax.validation.constraints.Email;

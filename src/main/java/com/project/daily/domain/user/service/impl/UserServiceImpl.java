@@ -1,12 +1,12 @@
-package com.project.daily.service.impl;
+package com.project.daily.domain.user.service.impl;
 
-import com.project.daily.domain.User;
-import com.project.daily.dto.Request.UserLoginDto;
-import com.project.daily.dto.Request.UserSignUpDto;
-import com.project.daily.dto.Response.UserLoginResponseDto;
-import com.project.daily.exeception.CustomException;
-import com.project.daily.repository.UserRepository;
-import com.project.daily.service.UserService;
+import com.project.daily.domain.user.User;
+import com.project.daily.domain.user.dto.Request.UserLoginDto;
+import com.project.daily.domain.user.dto.Request.UserSignUpDto;
+import com.project.daily.domain.user.dto.Response.UserLoginResponseDto;
+import com.project.daily.domain.user.exeception.CustomException;
+import com.project.daily.domain.user.repository.UserRepository;
+import com.project.daily.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.project.daily.exeception.ErrorCode.*;
+import static com.project.daily.domain.user.exeception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor

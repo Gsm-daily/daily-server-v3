@@ -1,7 +1,7 @@
-package com.project.daily.exeception.Handler;
+package com.project.daily.domain.user.exeception.Handler;
 
-import com.project.daily.exeception.CustomException;
-import com.project.daily.exeception.ErrorResponse;
+import com.project.daily.domain.user.exeception.CustomException;
+import com.project.daily.domain.user.exeception.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

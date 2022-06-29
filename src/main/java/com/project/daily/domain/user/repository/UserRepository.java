@@ -1,6 +1,6 @@
-package com.project.daily.repository;
+package com.project.daily.domain.user.repository;
 
-import com.project.daily.domain.User;
+import com.project.daily.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

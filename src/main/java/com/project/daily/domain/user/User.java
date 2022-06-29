@@ -1,4 +1,4 @@
-package com.project.daily.domain;
+package com.project.daily.domain.user;
 
 
 import lombok.AllArgsConstructor;

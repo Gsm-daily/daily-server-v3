@@ -1,6 +1,6 @@
 package com.project.daily.global.security.jwt;
 
-import com.project.daily.exeception.CustomException;
+import com.project.daily.domain.user.exeception.CustomException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
-import static com.project.daily.exeception.ErrorCode.REFRESH_TOKEN_EXPIRATION;
+import static com.project.daily.domain.user.exeception.ErrorCode.REFRESH_TOKEN_EXPIRATION;
 
 
 @Component

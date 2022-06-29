@@ -1,4 +1,4 @@
-package com.project.daily.exeception;
+package com.project.daily.domain.user.exeception;
 
 import lombok.Builder;
 import lombok.Getter;

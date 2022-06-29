@@ -1,8 +1,8 @@
-package com.project.daily.controller;
+package com.project.daily.domain.user.controller;
 
-import com.project.daily.domain.User;
-import com.project.daily.dto.Request.UserSignUpDto;
-import com.project.daily.service.UserService;
+import com.project.daily.domain.user.User;
+import com.project.daily.domain.user.dto.Request.UserSignUpDto;
+import com.project.daily.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;

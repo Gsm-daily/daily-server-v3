@@ -1,8 +1,9 @@
 package com.project.daily.service;
 
-import com.project.daily.domain.User;
-import com.project.daily.dto.Request.UserSignUpDto;
-import com.project.daily.repository.UserRepository;
+import com.project.daily.domain.user.User;
+import com.project.daily.domain.user.dto.Request.UserSignUpDto;
+import com.project.daily.domain.user.repository.UserRepository;
+import com.project.daily.domain.user.service.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
