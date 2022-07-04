@@ -3,6 +3,7 @@ package com.project.daily.domain.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import java.util.Collection;
 @Table(name = "user")
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 @Builder
 public class User implements UserDetails {
 
@@ -28,7 +30,11 @@ public class User implements UserDetails {
     private String password;
 
     @Column
-    private String refresh_Token;
+    private String refreshToken;
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

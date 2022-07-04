@@ -16,6 +16,9 @@ public enum ErrorCode {
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     REFRESH_TOKEN_EXPIRATION(UNAUTHORIZED, "Refresh Token이 만료되었습니다."),
 
+    /* 403 FORBIDDEN : 웹 페이지를 볼 권한이 없음 */
+    TOKEN_INVALID(FORBIDDEN, "유효하지 않은 Token입니다."),
+
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     USER_NOT_FOUND(NOT_FOUND, "이메일을 찾을 수 없습니다."),
     PASSWORD_NOT_CORRECT(NOT_FOUND,"비밀번호가 맞지 않습니다."),

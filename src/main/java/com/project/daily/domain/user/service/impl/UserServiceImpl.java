@@ -7,6 +7,7 @@ import com.project.daily.domain.user.dto.Response.UserLoginResponseDto;
 import com.project.daily.domain.user.exeception.CustomException;
 import com.project.daily.domain.user.repository.UserRepository;
 import com.project.daily.domain.user.service.UserService;
+import com.project.daily.global.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import static com.project.daily.domain.user.exeception.ErrorCode.*;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -39,18 +41,26 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
     @Override
     public UserLoginResponseDto login(UserLoginDto userLoginDto) {
 
-            User user = userRepository.findByEmail(userLoginDto.getEmail())
-                    .orElseThrow(()-> new CustomException(USER_NOT_FOUND));
+        User user = userRepository.findByEmail(userLoginDto.getEmail())
+                .orElseThrow(()-> new CustomException(USER_NOT_FOUND));
 
-            if(!passwordEncoder.matches(userLoginDto.getPassword(), user.getPassword())) {
-                throw new CustomException(PASSWORD_NOT_CORRECT);
+        if(!passwordEncoder.matches(userLoginDto.getPassword(), user.getPassword())) {
+            throw new CustomException(PASSWORD_NOT_CORRECT);
             }
 
+        final String AccessToken = tokenProvider.generateAccessToken(user.getEmail());
+        final String RefreshToken = tokenProvider.generateRefreshToken(user.getEmail());
 
-        }
+        user.updateRefreshToken(RefreshToken);
+
+        return UserLoginResponseDto.builder()
+                .accessToken(AccessToken)
+                .refreshToken(RefreshToken)
+                .build();
     }
 
 
