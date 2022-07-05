@@ -1,17 +1,18 @@
 package com.project.daily.global.security.jwt;
 
-import com.project.daily.domain.user.exeception.CustomException;
+import com.project.daily.global.exeception.CustomException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
-import static com.project.daily.domain.user.exeception.ErrorCode.REFRESH_TOKEN_EXPIRATION;
+import static com.project.daily.global.exeception.ErrorCode.REFRESH_TOKEN_EXPIRATION;
 
 
 @Component
@@ -94,6 +95,15 @@ public class TokenProvider {
 
     public String generateRefreshToken(String email) {
         return doGenerateToken(email, TokenType.REFRESH_TOKEN, REFRESH_TOKEN_EXPIRED_TIME);
+    }
+
+    public String getRefreshToken(HttpServletRequest request) {
+        String refreshToken = request.getHeader("RefreshToken");
+        if(refreshToken != null && isExpired(refreshToken)) {
+            return refreshToken;
+        } else {
+            return null;
+        }
     }
 
 }
