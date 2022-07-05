@@ -1,8 +1,9 @@
-package com.project.daily.domain.user.exeception;
+package com.project.daily.global.exeception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpServerErrorException;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -22,9 +23,14 @@ public enum ErrorCode {
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     USER_NOT_FOUND(NOT_FOUND, "이메일을 찾을 수 없습니다."),
     PASSWORD_NOT_CORRECT(NOT_FOUND,"비밀번호가 맞지 않습니다."),
+    REFRESH_TOKEN_NOT_FOUND(NOT_FOUND, "RefreshToken을 찾을 수 없습니다."),
+    HIBERNATE_ERROR(NOT_FOUND, "Hibernate 관련 오류 입니다."),
+
 
     /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
-    USER_NOT_FIND(CONFLICT, "계정을 찾을 수 없습니다.");
+    USER_NOT_FIND(CONFLICT, "계정을 찾을 수 없습니다."),
+
+    UNKNOWN_SERVER_ERROR(INTERNAL_SERVER_ERROR, "알 수 없는 서버 오류 입니다.");
 
     private HttpStatus httpStatus;
     private String msg;
