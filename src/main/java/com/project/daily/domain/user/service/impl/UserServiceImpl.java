@@ -4,7 +4,7 @@ import com.project.daily.domain.user.User;
 import com.project.daily.domain.user.dto.Request.UserLoginDto;
 import com.project.daily.domain.user.dto.Request.UserSignUpDto;
 import com.project.daily.domain.user.dto.Response.UserLoginResponseDto;
-import com.project.daily.domain.user.exeception.CustomException;
+import com.project.daily.global.exeception.CustomException;
 import com.project.daily.domain.user.repository.UserRepository;
 import com.project.daily.domain.user.service.UserService;
 import com.project.daily.global.security.jwt.TokenProvider;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.project.daily.domain.user.exeception.ErrorCode.*;
+import static com.project.daily.global.exeception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor

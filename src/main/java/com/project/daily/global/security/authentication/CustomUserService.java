@@ -1,6 +1,6 @@
 package com.project.daily.global.security.authentication;
 
-import com.project.daily.domain.user.exeception.CustomException;
+import com.project.daily.global.exeception.CustomException;
 import com.project.daily.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import static com.project.daily.domain.user.exeception.ErrorCode.USER_NOT_FOUND;
+import static com.project.daily.global.exeception.ErrorCode.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
