@@ -1,15 +1,21 @@
 package com.project.daily.global.security;
 
+import com.project.daily.global.security.exception.ExceptionHandlerFilter;
 import com.project.daily.global.security.jwt.JwtRequestFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 
 @Configuration
 @EnableWebSecurity
@@ -17,20 +23,30 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtRequestFilter jwtRequestFilter;
+    private final ExceptionHandlerFilter exceptionHandlerFilter;
 
     @Override
-    public void configure(HttpSecurity http) throws Exception {
+    public void configure(WebSecurity web) {
+        web.ignoring()
+                .antMatchers("/resources/**");
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
                 .cors().and()
+                .csrf().disable()
                 .httpBasic().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .authorizeRequests()
-                .antMatchers("/user/register").permitAll()
-                .antMatchers("/user/login").permitAll()
-                .antMatchers("/refreshToken").permitAll()
+                .antMatchers(POST, "/user/login").permitAll()
+                .antMatchers(POST, "/user/register").permitAll()
+                .antMatchers(PUT, "/refreshToken").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(exceptionHandlerFilter, JwtRequestFilter.class);
     }
 
     @Bean

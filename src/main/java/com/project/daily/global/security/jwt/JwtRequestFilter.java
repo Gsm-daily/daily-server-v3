@@ -28,11 +28,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String accessToken = request.getHeader("Authorization");
 
-        if(accessToken != null && tokenProvider.isExpired(accessToken)) {
+        if(accessToken != null && !tokenProvider.isExpired(accessToken)) {
             String userEmail = accessTokenExractEmail(accessToken);
             if(userEmail != null)
                 registerUserInfoInSecurityContext(userEmail, request);
         }
+        filterChain.doFilter(request, response);
     }
 
     private String accessTokenExractEmail(String accessToken){
