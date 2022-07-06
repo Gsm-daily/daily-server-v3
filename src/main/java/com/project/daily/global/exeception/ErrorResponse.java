@@ -2,6 +2,7 @@ package com.project.daily.global.exeception;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @Getter
@@ -21,6 +22,17 @@ public class ErrorResponse {
                         .error(errorCode.getHttpStatus().name())
                         .code(errorCode.name())
                         .message(errorCode.getMsg())
+                        .build()
+                );
+    }
+
+    public static ResponseEntity<ErrorResponse> toResponseEntity(HttpStatus httpStatus, String message) {
+        return ResponseEntity
+                .status(httpStatus)
+                .body(ErrorResponse.builder()
+                        .status(httpStatus.value())
+                        .error(httpStatus.name())
+                        .message(message)
                         .build()
                 );
     }
