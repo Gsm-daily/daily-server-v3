@@ -4,11 +4,12 @@ import com.project.daily.domain.user.User;
 import com.project.daily.domain.user.dto.Request.UserLoginDto;
 import com.project.daily.domain.user.dto.Request.UserSignUpDto;
 import com.project.daily.domain.user.dto.Response.UserLoginResponseDto;
-import com.project.daily.global.exeception.CustomException;
 import com.project.daily.domain.user.repository.UserRepository;
 import com.project.daily.domain.user.service.UserService;
+import com.project.daily.global.exeception.CustomException;
 import com.project.daily.global.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import java.util.Optional;
 import static com.project.daily.global.exeception.ErrorCode.*;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -28,16 +30,13 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User register(UserSignUpDto userSignUpDto) {
-
         Optional<User> findByEmail = userRepository.findByEmail(userSignUpDto.getEmail());
 
-        if(findByEmail.isEmpty()) {
+        if(findByEmail.isPresent()) {
             throw new CustomException(USED_EMAIL);
         }
 
-        userSignUpDto.setPassword(passwordEncoder.encode(userSignUpDto.getPassword()));
-        User user = userSignUpDto.toEntity();
-
+        User user = userSignUpDto.toEntity(passwordEncoder.encode(userSignUpDto.getPassword()));
         return userRepository.save(user);
     }
 
@@ -62,6 +61,4 @@ public class UserServiceImpl implements UserService {
                 .refreshToken(RefreshToken)
                 .build();
     }
-
-
 }

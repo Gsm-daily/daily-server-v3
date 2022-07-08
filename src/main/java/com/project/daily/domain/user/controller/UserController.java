@@ -7,8 +7,10 @@ import com.project.daily.domain.user.service.UserService;
 import com.project.daily.global.response.ResponseService;
 import com.project.daily.global.response.result.CommonResultResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
