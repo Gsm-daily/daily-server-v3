@@ -39,12 +39,12 @@ public class ErrorExceptionHandler {
         StringBuilder stringBuilder = new StringBuilder();
 
         for(FieldError fieldError : bindingResult.getFieldErrors()) {
-            stringBuilder.append(fieldError.getField()).append(":");
+            stringBuilder.append(fieldError.getField()).append(" : ");
             stringBuilder.append(fieldError.getDefaultMessage());
             stringBuilder.append(",");
         }
 
-        stringBuilder.deleteCharAt(stringBuilder.indexOf(","));
+        stringBuilder.deleteCharAt(stringBuilder.lastIndexOf(","));
         return ErrorResponse.toResponseEntity(HttpStatus.BAD_REQUEST, stringBuilder.toString());
     }
 }
