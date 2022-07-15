@@ -1,6 +1,7 @@
 package com.project.daily.domain.user;
 
 
+import com.project.daily.domain.user.enumType.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +10,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
+import static javax.persistence.EnumType.STRING;
 
 @Getter
 @Builder
@@ -31,6 +36,12 @@ public class User implements UserDetails {
 
     @Column
     private String refreshToken;
+
+    @Enumerated(STRING) @Column(name = "Role")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "Role", joinColumns = @JoinColumn(name = "user_id"))
+    @Builder.Default
+    private List<Role> roles = new ArrayList<>();
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;

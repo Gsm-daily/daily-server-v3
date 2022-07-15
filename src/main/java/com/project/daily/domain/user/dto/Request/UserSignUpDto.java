@@ -1,17 +1,19 @@
 package com.project.daily.domain.user.dto.Request;
 
 import com.project.daily.domain.user.User;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.project.daily.domain.user.enumType.Role;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Collections;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserSignUpDto {
 
     @Email(message = "이메일 형식이 아닙니다.")
@@ -26,6 +28,8 @@ public class UserSignUpDto {
         return User.builder()
                 .email(email)
                 .password(password)
+                .refreshToken(null)
+                .roles(Collections.singletonList(Role.ROLE_USER))
                 .build();
     }
 }
