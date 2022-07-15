@@ -7,7 +7,7 @@ import com.project.daily.domain.user.dto.Response.UserLoginResponseDto;
 
 public interface UserService {
 
-    User register(UserSignUpDto userSignUpDto);
+    Long register(UserSignUpDto userSignUpDto);
     UserLoginResponseDto login(UserLoginDto userLoginDto);
 
 }

@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User register(UserSignUpDto userSignUpDto) {
+    public Long register(UserSignUpDto userSignUpDto) {
         Optional<User> findByEmail = userRepository.findByEmail(userSignUpDto.getEmail());
 
         if(findByEmail.isPresent()) {
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userSignUpDto.toEntity(passwordEncoder.encode(userSignUpDto.getPassword()));
-        return userRepository.save(user);
+        return userRepository.save(user).getUser_id();
     }
 
     @Transactional
