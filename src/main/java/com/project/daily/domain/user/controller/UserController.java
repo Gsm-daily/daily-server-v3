@@ -1,5 +1,6 @@
 package com.project.daily.domain.user.controller;
 
+import com.project.daily.domain.user.dto.Request.EmailDto;
 import com.project.daily.domain.user.dto.Request.UserLoginDto;
 import com.project.daily.domain.user.dto.Request.UserSignUpDto;
 import com.project.daily.domain.user.dto.Response.UserLoginResponseDto;
@@ -25,6 +26,12 @@ public class UserController {
     @PostMapping("/register")
     public CommonResultResponse register(@Valid @RequestBody UserSignUpDto userSignUpDto) {
         userService.register(userSignUpDto);
+        return responseService.getSuccessResult();
+    }
+
+    @PostMapping("register/email")
+    public CommonResultResponse sendEmail(@Valid @RequestBody EmailDto emailDto) {
+        userService.sendEmail(emailDto);
         return responseService.getSuccessResult();
     }
 
