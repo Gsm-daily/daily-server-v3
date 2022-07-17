@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class UserLoginDto {
 
-    @Email(message = "이메일 형식이 아닙니다.")
+    @Email
     @NotBlank
     private String email;
 

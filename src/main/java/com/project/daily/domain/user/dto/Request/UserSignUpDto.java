@@ -16,11 +16,11 @@ import java.util.Collections;
 @Builder
 public class UserSignUpDto {
 
-    @Email(message = "이메일 형식이 아닙니다.")
-    @NotBlank(message = "이메일을 입력해주세요.")
+    @Email
+    @NotBlank
     private String email;
 
-    @NotBlank(message = "비밀번호를 입력해주세요.")
+    @NotBlank
     @Size(min = 4, max = 15, message = "비밀번호는 4자리 초과, 15자리 미만 여야 합니다.")
     private String password;
 
