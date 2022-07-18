@@ -9,6 +9,7 @@ import com.project.daily.domain.sign.dto.Response.SignInResponseDto;
 import com.project.daily.domain.sign.repository.UserRepository;
 import com.project.daily.global.exeception.CustomException;
 import com.project.daily.global.security.jwt.TokenProvider;
+import com.project.daily.global.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -34,6 +35,7 @@ public class SignServiceImpl implements SignService {
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender javaMailSender;
+    private final RedisUtil redisUtil;
 
     @Transactional
     @Override
@@ -74,7 +76,7 @@ public class SignServiceImpl implements SignService {
         } catch (MessagingException e) {
             e.printStackTrace(); // 에러의 발생 근원지를 찾아서 단계별로 에러를 출력한다.
         }
-
+        redisUtil.setDataExpire(email, authKey, 60 * 5L);
     }
 
     @Transactional
