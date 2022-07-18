@@ -1,4 +1,4 @@
-package com.project.daily.domain.user.service;
+package com.project.daily.domain.sign.service;
 
 import com.project.daily.domain.sign.dto.Request.SignInDto;
 import com.project.daily.domain.sign.dto.Request.SignUpDto;
