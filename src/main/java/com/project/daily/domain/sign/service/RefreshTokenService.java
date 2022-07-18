@@ -1,6 +1,6 @@
-package com.project.daily.domain.user.service;
+package com.project.daily.domain.sign.service;
 
-import com.project.daily.domain.user.dto.Request.RefreshTokenDto;
+import com.project.daily.domain.sign.dto.Request.RefreshTokenDto;
 
 import java.util.Map;
 

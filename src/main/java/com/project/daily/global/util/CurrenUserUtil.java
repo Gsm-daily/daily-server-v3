@@ -1,7 +1,7 @@
 package com.project.daily.global.util;
 
-import com.project.daily.domain.user.User;
-import com.project.daily.domain.user.repository.UserRepository;
+import com.project.daily.domain.sign.User;
+import com.project.daily.domain.sign.repository.UserRepository;
 import com.project.daily.global.exeception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;

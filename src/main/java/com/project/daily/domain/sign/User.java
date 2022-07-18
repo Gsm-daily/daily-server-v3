@@ -1,7 +1,7 @@
-package com.project.daily.domain.user;
+package com.project.daily.domain.sign;
 
 
-import com.project.daily.domain.user.enumType.Role;
+import com.project.daily.domain.sign.enumType.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

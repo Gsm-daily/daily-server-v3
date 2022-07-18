@@ -1,4 +1,4 @@
-package com.project.daily.domain.user.enumType;
+package com.project.daily.domain.sign.enumType;
 
 import lombok.Getter;
 

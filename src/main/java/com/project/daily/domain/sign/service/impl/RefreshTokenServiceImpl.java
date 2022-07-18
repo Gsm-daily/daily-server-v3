@@ -1,10 +1,10 @@
-package com.project.daily.domain.user.service.impl;
+package com.project.daily.domain.sign.service.impl;
 
-import com.project.daily.domain.user.User;
-import com.project.daily.domain.user.dto.Request.RefreshTokenDto;
+import com.project.daily.domain.sign.service.RefreshTokenService;
+import com.project.daily.domain.sign.User;
+import com.project.daily.domain.sign.dto.Request.RefreshTokenDto;
 import com.project.daily.global.exeception.CustomException;
-import com.project.daily.domain.user.repository.UserRepository;
-import com.project.daily.domain.user.service.RefreshTokenService;
+import com.project.daily.domain.sign.repository.UserRepository;
 import com.project.daily.global.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

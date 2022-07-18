@@ -1,10 +1,10 @@
-package com.project.daily.domain.user.controller;
+package com.project.daily.domain.sign.controller;
 
-import com.project.daily.domain.user.dto.Request.EmailDto;
-import com.project.daily.domain.user.dto.Request.UserLoginDto;
-import com.project.daily.domain.user.dto.Request.UserSignUpDto;
-import com.project.daily.domain.user.dto.Response.UserLoginResponseDto;
-import com.project.daily.domain.user.service.UserService;
+import com.project.daily.domain.sign.dto.Request.EmailDto;
+import com.project.daily.domain.sign.dto.Request.SignInDto;
+import com.project.daily.domain.sign.dto.Request.SignUpDto;
+import com.project.daily.domain.sign.dto.Response.SignInResponseDto;
+import com.project.daily.domain.sign.service.SignService;
 import com.project.daily.global.response.ResponseService;
 import com.project.daily.global.response.result.CommonResultResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,25 +18,25 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
-public class UserController {
+public class SignController {
 
-    private final UserService userService;
+    private final SignService signService;
     private final ResponseService responseService;
 
     @PostMapping("/register")
-    public CommonResultResponse register(@Valid @RequestBody UserSignUpDto userSignUpDto) {
-        userService.register(userSignUpDto);
+    public CommonResultResponse register(@Valid @RequestBody SignUpDto signUpDto) {
+        signService.register(signUpDto);
         return responseService.getSuccessResult();
     }
 
     @PostMapping("register/email")
     public CommonResultResponse sendEmail(@Valid @RequestBody EmailDto emailDto) {
-        userService.sendEmail(emailDto);
+        signService.sendEmail(emailDto);
         return responseService.getSuccessResult();
     }
 
     @PostMapping("/login")
-    public UserLoginResponseDto login(@Valid @RequestBody UserLoginDto userLoginDto) {
-        return userService.login(userLoginDto);
+    public SignInResponseDto login(@Valid @RequestBody SignInDto signInDto) {
+        return signService.login(signInDto);
     }
 }

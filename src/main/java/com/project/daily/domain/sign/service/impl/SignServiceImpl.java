@@ -1,19 +1,19 @@
-package com.project.daily.domain.user.service.impl;
+package com.project.daily.domain.sign.service.impl;
 
-import com.project.daily.domain.user.User;
-import com.project.daily.domain.user.dto.Request.EmailDto;
-import com.project.daily.domain.user.dto.Request.UserLoginDto;
-import com.project.daily.domain.user.dto.Request.UserSignUpDto;
-import com.project.daily.domain.user.dto.Response.UserLoginResponseDto;
-import com.project.daily.domain.user.repository.UserRepository;
-import com.project.daily.domain.user.service.UserService;
+import com.project.daily.domain.sign.service.SignService;
+import com.project.daily.domain.sign.User;
+import com.project.daily.domain.sign.dto.Request.EmailDto;
+import com.project.daily.domain.sign.dto.Request.SignInDto;
+import com.project.daily.domain.sign.dto.Request.SignUpDto;
+import com.project.daily.domain.sign.dto.Response.SignInResponseDto;
+import com.project.daily.domain.sign.repository.UserRepository;
 import com.project.daily.global.exeception.CustomException;
 import com.project.daily.global.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +28,7 @@ import static com.project.daily.global.exeception.ErrorCode.*;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class SignServiceImpl implements SignService {
 
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
@@ -37,17 +37,18 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public Long register(UserSignUpDto userSignUpDto) {
-        Optional<User> findByEmail = userRepository.findByEmail(userSignUpDto.getEmail());
+    public Long register(SignUpDto signUpDto) {
+        Optional<User> findByEmail = userRepository.findByEmail(signUpDto.getEmail());
 
         if(findByEmail.isPresent()) {
             throw new CustomException(USED_EMAIL);
         }
 
-        User user = userSignUpDto.toEntity(passwordEncoder.encode(userSignUpDto.getPassword()));
+        User user = signUpDto.toEntity(passwordEncoder.encode(signUpDto.getPassword()));
         return userRepository.save(user).getUser_id();
     }
 
+    @Async
     @Override
     public void sendEmail(EmailDto emailDto) {
 
@@ -57,6 +58,7 @@ public class UserServiceImpl implements UserService {
         sendEmailText(emailDto.getEmail(), authKey);
     }
 
+    @Async
     public void sendEmailText(String email, String authKey) {
 
         String subject = "test";
@@ -77,12 +79,12 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserLoginResponseDto login(UserLoginDto userLoginDto) {
+    public SignInResponseDto login(SignInDto signInDto) {
 
-        User user = userRepository.findByEmail(userLoginDto.getEmail())
+        User user = userRepository.findByEmail(signInDto.getEmail())
                 .orElseThrow(()-> new CustomException(USER_NOT_FOUND));
 
-        if(!passwordEncoder.matches(userLoginDto.getPassword(), user.getPassword())) {
+        if(!passwordEncoder.matches(signInDto.getPassword(), user.getPassword())) {
             throw new CustomException(PASSWORD_NOT_CORRECT);
             }
 
@@ -91,7 +93,7 @@ public class UserServiceImpl implements UserService {
 
         user.updateRefreshToken(RefreshToken);
 
-        return UserLoginResponseDto.builder()
+        return SignInResponseDto.builder()
                 .accessToken(AccessToken)
                 .refreshToken(RefreshToken)
                 .build();

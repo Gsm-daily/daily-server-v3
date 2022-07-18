@@ -1,4 +1,4 @@
-package com.project.daily.domain.user.dto.Request;
+package com.project.daily.domain.sign.dto.Request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,7 @@
-package com.project.daily.domain.user.controller;
+package com.project.daily.domain.sign.controller;
 
-import com.project.daily.domain.user.dto.Request.RefreshTokenDto;
-import com.project.daily.domain.user.service.RefreshTokenService;
+import com.project.daily.domain.sign.dto.Request.RefreshTokenDto;
+import com.project.daily.domain.sign.service.RefreshTokenService;
 import com.project.daily.global.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

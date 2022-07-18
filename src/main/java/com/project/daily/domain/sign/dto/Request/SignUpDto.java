@@ -1,7 +1,7 @@
-package com.project.daily.domain.user.dto.Request;
+package com.project.daily.domain.sign.dto.Request;
 
-import com.project.daily.domain.user.User;
-import com.project.daily.domain.user.enumType.Role;
+import com.project.daily.domain.sign.User;
+import com.project.daily.domain.sign.enumType.Role;
 import lombok.*;
 
 import javax.validation.constraints.Email;
@@ -14,7 +14,7 @@ import java.util.Collections;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserSignUpDto {
+public class SignUpDto {
 
     @Email
     @NotBlank
