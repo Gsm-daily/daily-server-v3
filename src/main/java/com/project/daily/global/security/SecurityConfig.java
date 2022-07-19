@@ -14,8 +14,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.http.HttpMethod.PUT;
+import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
@@ -40,7 +39,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(POST, "/user/**").permitAll()
+                .antMatchers(POST, "/user/register").permitAll()
+                .antMatchers(POST, "/user/login").permitAll()
+                .antMatchers(POST, "/user/register/email").permitAll()
+                .antMatchers(POST, "/user/register/email/check").permitAll()
                 .antMatchers(PUT, "/refreshToken").permitAll()
                 .anyRequest().authenticated()
                 .and()
