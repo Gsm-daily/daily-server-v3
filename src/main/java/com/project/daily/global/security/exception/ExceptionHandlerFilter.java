@@ -25,22 +25,24 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
     private final ObjectMapper objectMapper;
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         try{
             filterChain.doFilter(request, response);
-        } catch (ExpiredJwtException e) {
-            log.info("[ ExceptionHandlerFilter ] 에서 ExpiredJwtException 발생");
-            setErrorResponse(REFRESH_TOKEN_EXPIRATION, response);
-        } catch (JwtException | IllegalArgumentException e) {
-            log.info("[ ExceptionHandlerFilter ] 에서 JwtException 발생");
+        }catch (ExpiredJwtException e) {
+            log.error("[ ExceptionHandlerFilter ] 에서 ExpiredJwtException 발생");
+            setErrorResponse(TOKEN_EXPIRATION, response);
+        }catch (JwtException | IllegalArgumentException e) {
+            log.error("[ ExceptionHandlerFilter ] 에서 JwtException 발생");
             setErrorResponse(TOKEN_INVALID, response);
-        } catch (Exception e) {
-            log.info("[ ExceptionHandlerFilter ] 에서 Exception 발생");
+        }
+        /*
+        catch (Exception e) {
+            log.error("[ ExceptionHandlerFilter ] 에서 Exception 발생");
             setErrorResponse(UNKNOWN_SERVER_ERROR, response);
         }
+         */
     }
 
     public void setErrorResponse(ErrorCode errorCode, HttpServletResponse response) throws IOException {
@@ -49,12 +51,13 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(errorCode.getHttpStatus().value())
+                .error(errorCode.getHttpStatus().name()) // 예를 들어 Bad request 같은거?
                 .code(errorCode.name())
-                .error(errorCode.getHttpStatus().name())
                 .message(errorCode.getMsg())
                 .build();
 
         String errorResponseEntityToJson = objectMapper.writeValueAsString(errorResponse);
         response.getWriter().write(errorResponseEntityToJson);
+
     }
 }
