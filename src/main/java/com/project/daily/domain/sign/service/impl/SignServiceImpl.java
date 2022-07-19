@@ -1,5 +1,6 @@
 package com.project.daily.domain.sign.service.impl;
 
+import com.project.daily.domain.sign.dto.Request.CheckEmailKeyDto;
 import com.project.daily.domain.sign.service.SignService;
 import com.project.daily.domain.sign.User;
 import com.project.daily.domain.sign.dto.Request.EmailDto;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.validation.constraints.Null;
 import java.util.Optional;
 import java.util.Random;
 
@@ -37,6 +39,7 @@ public class SignServiceImpl implements SignService {
     private final JavaMailSender javaMailSender;
     private final RedisUtil redisUtil;
 
+    // 회원가입
     @Transactional
     @Override
     public Long register(SignUpDto signUpDto) {
@@ -50,6 +53,7 @@ public class SignServiceImpl implements SignService {
         return userRepository.save(user).getUser_id();
     }
 
+    // 회원가입 때 보낼 인증번호
     @Async
     @Override
     public void sendEmail(EmailDto emailDto) {
@@ -64,7 +68,7 @@ public class SignServiceImpl implements SignService {
     public void sendEmailText(String email, String authKey) {
 
         String subject = "test";
-        String text = "회원가입을 위한 인증번호는 " + authKey + "입니다. <br/>";
+        String text = "daily 인증번호는 " + authKey + "입니다. <br/>";
 
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -76,9 +80,21 @@ public class SignServiceImpl implements SignService {
         } catch (MessagingException e) {
             e.printStackTrace(); // 에러의 발생 근원지를 찾아서 단계별로 에러를 출력한다.
         }
-        redisUtil.setDataExpire(email, authKey, 60 * 5L);
+        redisUtil.setDataExpire(authKey, email, 60 * 5L);
     }
 
+    @Override
+    public void checkEmailKey(CheckEmailKeyDto checkEmailKeyDto) {
+
+        String data = redisUtil.getData(checkEmailKeyDto.getKey());
+
+        if(data == null) {
+            throw new CustomException(KEY_NOT_CORRECT);
+        }
+
+    }
+
+    // 로그인
     @Transactional
     @Override
     public SignInResponseDto login(SignInDto signInDto) {
@@ -100,4 +116,10 @@ public class SignServiceImpl implements SignService {
                 .refreshToken(RefreshToken)
                 .build();
     }
+
+
+
+    // 비밀번호 찾을 때 발송하는 인증번호
+
+
 }
