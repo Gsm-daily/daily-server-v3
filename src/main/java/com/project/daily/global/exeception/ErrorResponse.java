@@ -2,39 +2,21 @@ package com.project.daily.global.exeception;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 @Getter
 @Builder
 public class ErrorResponse {
 
-    private final int status;
-    private final String error;
-    private final String code;
-    private final String message;
+    private String message;
+    private int status;
 
-    public static ResponseEntity<ErrorResponse> toResponseEntity(ErrorCode errorCode) {
-        return ResponseEntity
-                .status(errorCode.getHttpStatus())
-                .body(ErrorResponse.builder()
-                        .status(errorCode.getHttpStatus().value())
-                        .error(errorCode.getHttpStatus().name())
-                        .code(errorCode.name())
-                        .message(errorCode.getMsg())
-                        .build()
-                );
+    public ErrorResponse(ErrorCode errorCode) {
+        this.message = errorCode.getMsg();
+        this.status = errorCode.getStatus();
     }
 
-    public static ResponseEntity<ErrorResponse> toResponseEntity(HttpStatus httpStatus, String message) {
-        return ResponseEntity
-                .status(httpStatus)
-                .body(ErrorResponse.builder()
-                        .status(httpStatus.value())
-                        .error(httpStatus.name())
-                        .message(message)
-                        .build()
-                );
+    public ErrorResponse(String message, int status) {
+        this.message = message;
+        this.status = status;
     }
-
 }
