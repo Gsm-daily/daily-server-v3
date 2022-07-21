@@ -109,12 +109,13 @@ public class GlobalExceptionHandler {
         StringBuilder stringBuilder = new StringBuilder();
 
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
-            stringBuilder.append(bindingResult.getFieldErrors()).append(" : ");
+            stringBuilder.append(fieldError.getField()).append(" : ");
             stringBuilder.append(fieldError.getDefaultMessage());
-            stringBuilder.append(",");
+            stringBuilder.append(", ");
         }
 
-        stringBuilder.deleteCharAt(stringBuilder.lastIndexOf(","));
+        stringBuilder.deleteCharAt(stringBuilder.lastIndexOf(", "));
+        stringBuilder.deleteCharAt(stringBuilder.lastIndexOf(" "));
         ErrorResponse errorResponse = new ErrorResponse(stringBuilder.toString(), HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
