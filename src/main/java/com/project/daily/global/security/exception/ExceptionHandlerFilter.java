@@ -3,6 +3,8 @@ package com.project.daily.global.security.exception;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.daily.global.exeception.ErrorCode;
 import com.project.daily.global.exeception.ErrorResponse;
+import com.project.daily.global.exeception.exceptions.TokenExpirationException;
+import com.project.daily.global.exeception.exceptions.TokenInvalidException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
@@ -29,13 +31,13 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         try{
-            filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response); // 여기서 JwtRequestFilter로 간다.
         }catch (ExpiredJwtException e) {
             log.error("[ ExceptionHandlerFilter ] 에서 ExpiredJwtException 발생");
-            setErrorResponse(TOKEN_EXPIRATION, response);
+            throw new TokenExpirationException("expired Token", TOKEN_EXPIRATION);
         }catch (JwtException | IllegalArgumentException e) {
             log.error("[ ExceptionHandlerFilter ] 에서 JwtException 발생");
-            setErrorResponse(TOKEN_INVALID, response);
+            throw new TokenInvalidException("invalid Token", TOKEN_INVALID);
         }
         /*
         catch (Exception e) {
@@ -45,19 +47,19 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
          */
     }
 
-    public void setErrorResponse(ErrorCode errorCode, HttpServletResponse response) throws IOException {
-        response.setStatus(errorCode.getHttpStatus().value());
-        response.setContentType("application/json; charset=utf-8");
-
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .status(errorCode.getHttpStatus().value())
-                .error(errorCode.getHttpStatus().name()) // 예를 들어 Bad request 같은거?
-                .code(errorCode.name())
-                .message(errorCode.getMsg())
-                .build();
-
-        String errorResponseEntityToJson = objectMapper.writeValueAsString(errorResponse);
-        response.getWriter().write(errorResponseEntityToJson);
-
-    }
+//    public void setErrorResponse(ErrorCode errorCode, HttpServletResponse response) throws IOException {
+//        response.setStatus(errorCode.getHttpStatus().value());
+//        response.setContentType("application/json; charset=utf-8");
+//
+//        ErrorResponse errorResponse = ErrorResponse.builder()
+//                .status(errorCode.getHttpStatus().value())
+//                .error(errorCode.getHttpStatus().name()) // 예를 들어 Bad request 같은거?
+//                .code(errorCode.name())
+//                .message(errorCode.getMsg())
+//                .build();
+//
+//        String errorResponseEntityToJson = objectMapper.writeValueAsString(errorResponse);
+//        response.getWriter().write(errorResponseEntityToJson);
+//
+//    }
 }

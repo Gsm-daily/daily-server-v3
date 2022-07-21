@@ -1,6 +1,5 @@
 package com.project.daily.global.security.jwt;
 
-import com.project.daily.global.exeception.CustomException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
-import static com.project.daily.global.exeception.ErrorCode.REFRESH_TOKEN_EXPIRATION;
-
 
 @Component
 public class TokenProvider {
@@ -21,8 +18,8 @@ public class TokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private static final Long ACCESS_TOKEN_EXPIRED_TIME = 1000 * 60 * 60 * 3L; // 만료시간 3시간
-    private static final Long REFRESH_TOKEN_EXPIRED_TIME = 14 * 24 * 60 * 60 * 1000L;
+    private static final Long ACCESS_TOKEN_EXPIRED_TIME = 1000 * 60 * 1L; // 만료시간 3시간
+    private static final Long REFRESH_TOKEN_EXPIRED_TIME = 1000 * 60 * 5L; // 14 * 24 * 60 * 60 * 1000L
 
     @RequiredArgsConstructor
     enum TokenType {
@@ -45,7 +42,7 @@ public class TokenProvider {
         return Keys.hmacShaKeyFor(keyByte);
     }
 
-    public Claims extractAllClaims(String token) throws ExpiredJwtException, IllegalArgumentException, UnsupportedOperationException {
+    public Claims extractAllClaims(String token) throws ExpiredJwtException, IllegalArgumentException, UnsupportedOperationException { // 여기서 throws를 해줬기 때문에 상위 계층 한테 간다.
         return Jwts.parserBuilder() // token 추출 할 때 사용
                 .setSigningKey(getSigningKey(secretKey))
                 .build()
@@ -54,16 +51,10 @@ public class TokenProvider {
     }
 
     public String getUserEmail(String token) {
-
-        if(isExpired(token)) {
-            throw new CustomException(REFRESH_TOKEN_EXPIRATION);
-        }
-
         return extractAllClaims(token).get(TokenClaimName.USER_EMAIL.value, String.class); // .get(ClaimName, Object)
     }
 
     public String getTokenType(String token) {
-
         return extractAllClaims(token).get(TokenClaimName.TOKEN_TYPE.value, String.class);
     }
 
@@ -79,12 +70,12 @@ public class TokenProvider {
     private String doGenerateToken(String userEmail, TokenType tokenType, Long expiredTime) {
         final Claims claims = Jwts.claims();
         claims.put("userEmail", userEmail);
-        claims.put("tokenType", tokenType);
+        claims.put("tokenType", tokenType.value);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setExpiration(new Date(System.currentTimeMillis()))
-                .setIssuedAt(new Date(System.currentTimeMillis() + expiredTime))
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expiredTime))
                 .signWith(getSigningKey(secretKey), SignatureAlgorithm.HS256)
                 .compact();
     }

@@ -3,8 +3,10 @@ package com.project.daily.domain.sign.service.impl;
 import com.project.daily.domain.sign.service.RefreshTokenService;
 import com.project.daily.domain.sign.User;
 import com.project.daily.domain.sign.dto.Request.RefreshTokenDto;
-import com.project.daily.global.exeception.CustomException;
 import com.project.daily.domain.sign.repository.UserRepository;
+import com.project.daily.global.exeception.exceptions.RefreshTokenNotFoundException;
+import com.project.daily.global.exeception.exceptions.TokenInvalidException;
+import com.project.daily.global.exeception.exceptions.UserNotFoundException;
 import com.project.daily.global.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,10 +28,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
         String email = refreshTokenDto.getEmail();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+                .orElseThrow(() -> new UserNotFoundException("user not found", USER_NOT_FOUND));
 
         if(user.getRefreshToken() == null) {
-            throw new CustomException(TOKEN_INVALID);
+            throw new TokenInvalidException("Invalid token", TOKEN_INVALID);
         }
         Map<String, String> map = new HashMap<>();
 
@@ -44,6 +46,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
             return map;
         }
-        throw new CustomException(REFRESH_TOKEN_NOT_FOUND);
+        throw new RefreshTokenNotFoundException("refreshToken not found", REFRESH_TOKEN_NOT_FOUND);
     }
 }

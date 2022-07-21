@@ -1,7 +1,7 @@
 package com.project.daily.global.security.authentication;
 
-import com.project.daily.global.exeception.CustomException;
 import com.project.daily.domain.sign.repository.UserRepository;
+import com.project.daily.global.exeception.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,6 +19,6 @@ public class CustomUserService implements UserDetailsService{
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+                .orElseThrow(() -> new UserNotFoundException("user not found", USER_NOT_FOUND));
     }
 }

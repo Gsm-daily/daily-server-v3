@@ -8,7 +8,10 @@ import com.project.daily.domain.sign.dto.Request.SignInDto;
 import com.project.daily.domain.sign.dto.Request.SignUpDto;
 import com.project.daily.domain.sign.dto.Response.SignInResponseDto;
 import com.project.daily.domain.sign.repository.UserRepository;
-import com.project.daily.global.exeception.CustomException;
+import com.project.daily.global.exeception.exceptions.KeyNotCorrectException;
+import com.project.daily.global.exeception.exceptions.PasswordNotCorrectException;
+import com.project.daily.global.exeception.exceptions.UsedEmailException;
+import com.project.daily.global.exeception.exceptions.UserNotFoundException;
 import com.project.daily.global.security.jwt.TokenProvider;
 import com.project.daily.global.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import javax.validation.constraints.Null;
 import java.util.Optional;
 import java.util.Random;
 
@@ -46,7 +48,7 @@ public class SignServiceImpl implements SignService {
         Optional<User> findByEmail = userRepository.findByEmail(signUpDto.getEmail());
 
         if(findByEmail.isPresent()) {
-            throw new CustomException(USED_EMAIL);
+            throw new UsedEmailException("used email", USED_EMAIL);
         }
 
         User user = signUpDto.toEntity(passwordEncoder.encode(signUpDto.getPassword()));
@@ -89,7 +91,7 @@ public class SignServiceImpl implements SignService {
         String data = redisUtil.getData(checkEmailKeyDto.getKey());
 
         if(data == null) {
-            throw new CustomException(KEY_NOT_CORRECT);
+            throw new KeyNotCorrectException("key is not correct", KEY_NOT_CORRECT);
         }
 
     }
@@ -100,10 +102,10 @@ public class SignServiceImpl implements SignService {
     public SignInResponseDto login(SignInDto signInDto) {
 
         User user = userRepository.findByEmail(signInDto.getEmail())
-                .orElseThrow(()-> new CustomException(USER_NOT_FOUND));
+                .orElseThrow(()-> new UserNotFoundException("user not found", USER_NOT_FOUND));
 
         if(!passwordEncoder.matches(signInDto.getPassword(), user.getPassword())) {
-            throw new CustomException(PASSWORD_NOT_CORRECT);
+            throw new PasswordNotCorrectException("password not correct", PASSWORD_NOT_CORRECT);
             }
 
         final String AccessToken = tokenProvider.generateAccessToken(user.getEmail());
