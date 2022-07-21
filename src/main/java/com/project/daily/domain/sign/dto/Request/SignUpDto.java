@@ -21,7 +21,7 @@ public class SignUpDto {
     private String email;
 
     @NotBlank
-    @Size(min = 4, max = 15, message = "비밀번호는 4자리 초과, 15자리 미만 여야 합니다.")
+    @Size(min = 4, max = 15)
     private String password;
 
     public User toEntity(String password){

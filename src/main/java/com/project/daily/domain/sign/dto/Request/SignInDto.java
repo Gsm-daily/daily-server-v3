@@ -15,7 +15,7 @@ public class SignInDto {
     @NotBlank
     private String email;
 
-    @Size(min = 4, max = 15, message = "비밀번호는 최소 4자리 최대 15자리 입니다.")
+    @Size(min = 4, max = 15)
     @NotBlank
     private String password;
 }
