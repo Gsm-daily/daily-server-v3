@@ -34,32 +34,33 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response); // 여기서 JwtRequestFilter로 간다.
         }catch (ExpiredJwtException e) {
             log.error("[ ExceptionHandlerFilter ] 에서 ExpiredJwtException 발생");
-            throw new TokenExpirationException("expired Token", TOKEN_EXPIRATION);
+            setErrorResponse(TOKEN_EXPIRATION, response);
         }catch (JwtException | IllegalArgumentException e) {
             log.error("[ ExceptionHandlerFilter ] 에서 JwtException 발생");
-            throw new TokenInvalidException("invalid Token", TOKEN_INVALID);
+            setErrorResponse(TOKEN_INVALID, response);
+        }catch (TokenInvalidException e) {
+            log.error("[ ExceptionHandlerFilter ] 에서 TokenInvalidException 발생");
+            setErrorResponse(TOKEN_INVALID, response);
         }
-        /*
-        catch (Exception e) {
+
+       /*
+        catch(Exception e) {
             log.error("[ ExceptionHandlerFilter ] 에서 Exception 발생");
             setErrorResponse(UNKNOWN_SERVER_ERROR, response);
         }
-         */
+        */
+
+
     }
 
-//    public void setErrorResponse(ErrorCode errorCode, HttpServletResponse response) throws IOException {
-//        response.setStatus(errorCode.getHttpStatus().value());
-//        response.setContentType("application/json; charset=utf-8");
-//
-//        ErrorResponse errorResponse = ErrorResponse.builder()
-//                .status(errorCode.getHttpStatus().value())
-//                .error(errorCode.getHttpStatus().name()) // 예를 들어 Bad request 같은거?
-//                .code(errorCode.name())
-//                .message(errorCode.getMsg())
-//                .build();
-//
-//        String errorResponseEntityToJson = objectMapper.writeValueAsString(errorResponse);
-//        response.getWriter().write(errorResponseEntityToJson);
-//
-//    }
+    public void setErrorResponse(ErrorCode errorCode, HttpServletResponse response) throws IOException {
+        response.setStatus(errorCode.getStatus());
+        response.setContentType("application/json; charset=utf-8");
+
+        ErrorResponse errorResponse = new ErrorResponse(errorCode);
+
+        String errorResponseEntityToJson = objectMapper.writeValueAsString(errorResponse);
+        response.getWriter().write(errorResponseEntityToJson);
+
+    }
 }

@@ -38,15 +38,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String accessToken = request.getHeader("Authorization");
 
         if(accessToken != null) {
-            if (!tokenProvider.isExpired(accessToken)) {
-                System.out.println("sldkfjaskjf");
-                String userEmail = accessTokenExractEmail(accessToken);
-                if (userEmail != null) registerUserInfoInSecurityContext(userEmail, request);
-                System.out.println("여기까지 옴");
-            }
             if(!tokenProvider.getTokenType(accessToken).equals("accessToken")){
                 throw new TokenInvalidException("invalid token", TOKEN_INVALID); // 단일 책임 원칙 때문에 CustomException으로 다 몰빵하는건 바꿔야함
             }
+
+            String userEmail = accessTokenExractEmail(accessToken);
+            if (userEmail != null) registerUserInfoInSecurityContext(userEmail, request);
         }
 
         filterChain.doFilter(request, response);
